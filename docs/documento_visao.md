@@ -51,3 +51,14 @@ RF015 - Alterar Crítica | Alterar uma crítica de um jogo | Usuário Crítico |
 RF016 - Adicionar Avaliação | Os usuários podem adicionar avaliações de 0 a 5 estrelas ao jogo | Usuário Padrão | 
 RF017 - Alterar Avaliação | Os usuários podem alterar as avaliações de 0 a 5 estrelas ao jogo | Usuário Padrão | 
 
+## Lista de Requisitos Não-Funcionais
+
+Requisito                                 | Descrição   |
+---------                                 | ----------- |
+RNF001 - Logs | Toda requisição feita ao servidor web deve ser logada, como também erros e crashs |
+RNF002 - Configurações | Coisas como porta do servidor web, endereço do banco de dados, devem ser passados por argumentos de linha de comando ao iniciar a aplicação |
+RNF003 - Suporte para mobile | A aplicação deve abrir de forma responsiva em browsers mobile |
+
+
+
+
