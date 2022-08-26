@@ -59,6 +59,16 @@ RNF001 - Logs | Toda requisição feita ao servidor web deve ser logada, como ta
 RNF002 - Configurações | Coisas como porta do servidor web, endereço do banco de dados, devem ser passados por argumentos de linha de comando ao iniciar a aplicação |
 RNF003 - Suporte para mobile | A aplicação deve abrir de forma responsiva em browsers mobile |
 
+## Riscos
+
+Tabela com o mapeamento dos riscos do projeto, as possíveis soluções e os responsáveis.
+
+Data | Risco | Prioridade | Responsável | Status | Providência/Solução |
+------ | ------ | ------ | ------ | ------ | ------ |
+26/08/2022 | Não aprendizado das ferramentas utilizadas pelos componentes do grupo | Alta | Todos | Vigente | Reforçar estudos sobre as ferramentas e aulas com a integrante que conhece a ferramenta |
+26/08/2022 | Ausência por qualquer motivo do cliente | Média | Gerente | Vigente | Planejar o cronograma tendo em base a agenda do cliente |
+26/08/2022 | Divisão de tarefas mal sucedida | Baixa | Gerente | Vigente | Acompanhar de perto o desenvolvimento de cada membro da equipe |
+26/08/2022 | Implementação de protótipo com as tecnologias | Alto | Todos | Resolvido | Encontrar tutorial com a maioria da tecnologia e implementar um caso base do sistema |
 
 
 
