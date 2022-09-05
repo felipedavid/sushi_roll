@@ -1,4 +1,5 @@
 postgres:
+	mkdir $HOME/.psql
 	docker run --name sushi_roll_postgres -e "POSTGRES_PASSWORD=postgres" -p 5432:5432 -v $HOME/.psql/:/var/lib/postgres -d postgres
 
 createuser:
@@ -10,4 +11,13 @@ createdb:
 dropdb:
 	docker exec -it sushi_roll_postgres dropdb sushi_roll_db
 
-.PHONY: postgres createuser createdb dropdb
+
+dsn = "postgresql://sushi:roll@localhost:5432/sushi_roll_db?sslmode=disable"
+
+migrateup:
+	migrate -path db/migration -database $(dsn) -verbose up
+
+migratedown:
+	migrate -path db/migration -database $(dsn) -verbose down
+
+.PHONY: postgres createuser createdb dropdb migrateup migratedown
