@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"github.com/felipedavid/sushi_roll/internal/models"
 	"log"
 	"net/http"
 	"os"
@@ -10,13 +11,15 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// app contém maior parte do estado necessário para a operação da aplicação
 type app struct {
 	infoLog *log.Logger
 	errLog  *log.Logger
+	games   *models.GameModel
 }
 
 func main() {
-	// Parsing command line flags
+	// Fazendo parsing dos argumentos por linha de comando
 	addr := flag.String("addr", ":4000", "HTTP listen address")
 	dsn := flag.String("dsn", "postgres://sushi:roll@localhost/sushi_roll_db?sslmode=disable", "Database Service Name")
 	flag.Parse()
@@ -24,15 +27,15 @@ func main() {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ltime|log.Ldate)
 	errLog := log.New(os.Stderr, "ERROR\t", log.Ltime|log.Ldate|log.Lshortfile)
 
-	_, err := openDB(*dsn)
+	db, err := openDB(*dsn)
 	if err != nil {
-		errLog.Println(err.Error())
-		return
+		errLog.Fatal(err.Error())
 	}
 
 	a := app{
 		infoLog: infoLog,
 		errLog:  errLog,
+		games:   &models.GameModel{DB: db},
 	}
 
 	infoLog.Printf("Starting server on address %s\n", *addr)
@@ -40,7 +43,7 @@ func main() {
 	errLog.Fatal(err)
 }
 
-// openDB creates a connection pool and test the connection with the database
+// openDB cria uma "connection pool" e testa se é possível se conectar ao banco de dados
 func openDB(dsn string) (*sql.DB, error) {
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
