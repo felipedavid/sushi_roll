@@ -2,6 +2,6 @@ CREATE TABLE game (
   id bigserial PRIMARY KEY,
   title varchar NOT NULL,
   description varchar NOT NULL,
-  release timestamp NOT NULL,
-  create_at timestamp NOT NULL DEFAULT (now())
+  release_at timestamp NOT NULL,
+  created_at timestamp NOT NULL DEFAULT (now())
 );
