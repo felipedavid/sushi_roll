@@ -6,7 +6,7 @@ func (a *app) routes() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", a.home)
-	mux.HandleFunc("/jogo", a.game)
+	mux.HandleFunc("/jogos", a.game)
 
-	return mux
+	return a.logRequest(mux)
 }
