@@ -4,41 +4,134 @@
 ### Modelo Entidade-Relacionamento (MER) - Mermaid
 
 ```mermaid
-    erDiagram
+    erDiagram 
+            USER ||..o{ PROFESSIONAL_CRITIC : has
+
+            USER ||..o{ USER_RATING : has
+
             USER ||..o{ COMMENT : has
-            COMMENT o{ ..|| GAME : has
-            GAME || ..o{ RATING : has
-            USER || ..o{ RATING : has
-            USER || ..o| CRITIC : has
-            CRITIC |o ..|| GAME : has
+
+            USER ||..o{ USER_ROLE : has
+
+            GAME ||..o{ COMMENT : has
+
+            GAME ||..o{ REFERRAL_LINK : has
+
+            GAME ||..o{ USER_RATING : has
+
+            GAME ||..o{ GAME_CATEGORY : has
+
+            VENDOR ||..o{ REFERRAL_LINK : has
+
+            ROLE ||..o{ USER_ROLE : has
             
-            USER {
-            INT id
-            STRING username
-            STRING email
-            STRING hashedPassword
-            STRING isAdmin
-            STRING isCritic
-            STRING createdAt
+            CATEGORY ||..o{ GAME_CATEGORY : has
+
+
+
+            USER { 
+
+            BIGSERIAL id 
+
+            VARCHAR name 
+
+            VARCHAR email 
+
+            TIMESTAMPZ birth 
+
+            TIMESTAMPZ createdAt 
+
+            } 
+
+            COMMENT { 
+
+                BIGSERIAL id 
+
+                VARCHAR content 
+
+                BIGINT writerId 
+
+                BIGINT gameId 
+
+                TIMESTAMPZ createdAt 
+
+            } 
+
+            GAME{ 
+
+                BIGSERIAL id 
+
+                VARCHAR title 
+
+                BIGSERIAL description 
+
+                TIMESTAMPZ release 
+
+                FLOAT avgUserRating 
+
+                TIMESTAMPZ createdAt 
+
+            } 
+
+            USER_RATING{ 
+
+                BIGSERIAL id 
+
+                INT value 
+
+                BIGINT userId 
+
+                BIGINT gameId 
+
+                TIMESTAMPZ createdAt 
+
+            } 
+
+            PROFESSIONAL_CRITIC { 
+
+                BIGSERIAL id 
+
+                BIGINT userId 
+
+                FLOAT rating 
+
+                VARCHAR commentary 
+
             }
-            COMMENT {
-                INT id
-                STRING content
-                STRING createdAt
+
+            ROLE{
+                BIGSERIAL id
+                VARCHAR name
             }
-            GAME{
-                INT id
-                STRING title
-                STRING description
-                STRING release
+
+            USER_ROLE{
+                BIGINT userId
+                BIGINT roleId
+                TIMESTAMPZ createdAt
             }
-            RATING{
-                INT id
-                FLOAT score
+
+            VENDOR{
+                BIGSERIAL id
+                VARCHAR name
+                VARCHAR websiteUrl
+                VARCHAR createdAt
             }
-            CRITIC {
-                INT id
-                STRING content
-                FLOAT rating
+
+            REFERRAL_LINK{
+                BIGSERIAL id
+                BIGINT vendorId
+                BIGINT gameId
+                VARCHAR link
             }
+
+            CATEGORY{
+                BIGSERIAL id
+                VARCHAR name
+                INT ageGroup
+            }
+
+            GAME_CATEGORY{
+                BIGINT gameId
+                BIGINT categoryId
+            } 	 
 ```
