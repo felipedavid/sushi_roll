@@ -22,9 +22,14 @@ func (a *app) home(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		for _, game := range games {
-			fmt.Fprintf(w, "%v\n", *game)
+		if len(games) > 0 {
+			for _, game := range games {
+				fmt.Fprintf(w, "%v\n", *game)
+			}
+		} else {
+			fmt.Fprintf(w, "Nenhum joguinho foi registrado")
 		}
+
 	default:
 		w.Header().Set("Allowed", http.MethodPost)
 		a.clientError(w, http.StatusMethodNotAllowed)
