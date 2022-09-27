@@ -10,7 +10,7 @@ type responseWriter struct {
 }
 
 func newResponseWriter(w http.ResponseWriter) *responseWriter {
-	return &responseWriter{ResponseWriter: w}
+	return &responseWriter{ResponseWriter: w, status: 200}
 }
 
 func (rw *responseWriter) WriteHeader(status int) {
