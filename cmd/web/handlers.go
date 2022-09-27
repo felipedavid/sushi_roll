@@ -16,7 +16,7 @@ func (a *app) home(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
-		games, err := a.games.Latest()
+		games, err := a.game.Latest()
 		if err != nil {
 			a.serverError(w, err)
 			return
@@ -24,19 +24,18 @@ func (a *app) home(w http.ResponseWriter, r *http.Request) {
 
 		if len(games) > 0 {
 			for _, game := range games {
-				fmt.Fprintf(w, "%v\n", *game)
+				fmt.Fprintf(w, "%+v\n", *game)
 			}
 		} else {
 			fmt.Fprintf(w, "Nenhum joguinho foi registrado")
 		}
-
 	default:
 		w.Header().Set("Allowed", http.MethodPost)
 		a.clientError(w, http.StatusMethodNotAllowed)
 	}
 }
 
-func (a *app) game(w http.ResponseWriter, r *http.Request) {
+func (a *app) games(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		id, err := strconv.ParseInt(r.URL.Query().Get("id"), 10, 64)
@@ -45,7 +44,7 @@ func (a *app) game(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		game, err := a.games.Get(id)
+		game, err := a.game.Get(id)
 		if err != nil {
 			if errors.Is(err, models.ErrNoRecord) {
 				a.notFound(w)
@@ -55,7 +54,7 @@ func (a *app) game(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		fmt.Fprintf(w, "%v", *game)
+		fmt.Fprintf(w, "%+v", *game)
 	case http.MethodPost:
 		err := r.ParseForm()
 		if err != nil {
@@ -68,7 +67,7 @@ func (a *app) game(w http.ResponseWriter, r *http.Request) {
 		desc := r.Form.Get("description")
 		createdAt := "2022-12-12"
 
-		id, err := a.games.Insert(title, desc, createdAt)
+		id, err := a.game.Insert(title, desc, createdAt)
 		if err != nil {
 			a.serverError(w, err)
 			return

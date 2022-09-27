@@ -15,7 +15,7 @@ import (
 type app struct {
 	infoLog *log.Logger
 	errLog  *log.Logger
-	games   *models.GameModel
+	game    *models.GameModel
 }
 
 func main() {
@@ -35,7 +35,7 @@ func main() {
 	a := app{
 		infoLog: infoLog,
 		errLog:  errLog,
-		games:   &models.GameModel{DB: db},
+		game:    &models.GameModel{DB: db},
 	}
 
 	infoLog.Printf("Starting server on address %s\n", *addr)
