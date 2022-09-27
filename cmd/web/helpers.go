@@ -17,3 +17,7 @@ func (a *app) clientError(w http.ResponseWriter, statusCode int) {
 func (a *app) notFound(w http.ResponseWriter) {
 	a.clientError(w, http.StatusNotFound)
 }
+
+func (a *app) getID(r *http.Request) (int64, error) {
+	return strconv.ParseInt(r.URL.Query().Get("id"), 10, 64)
+}
