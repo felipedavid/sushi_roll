@@ -76,6 +76,22 @@ func (a *app) game(w http.ResponseWriter, r *http.Request) {
 
 		url := fmt.Sprintf("/jogo?id=%d", id)
 		http.Redirect(w, r, url, http.StatusPermanentRedirect)
+	case http.MethodDelete:
+		id, err := a.getID(r)
+		if err != nil {
+			a.notFound(w)
+			return
+		}
+
+		err = a.game.Delete(id)
+		if err != nil {
+			// TODO: Test for specific errors and respond based on them
+			a.notFound(w)
+			return
+		}
+
+		fmt.Fprintf(w, "The game with id = %d was deleted\n", id)
+
 	default:
 		w.Header().Set("Allowed", http.MethodGet)
 		a.clientError(w, http.StatusMethodNotAllowed)

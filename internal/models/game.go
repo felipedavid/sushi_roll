@@ -86,3 +86,15 @@ func (m *GameModel) Latest() ([]*Game, error) {
 
 	return games, nil
 }
+
+func (m *GameModel) Delete(id int64) error {
+	stmt := `DELETE FROM game WHERE id = $1`
+
+	_, err := m.DB.Exec(stmt, id)
+	if err != nil {
+		// TODO: Return persionalized error if game does not exist
+		return err
+	}
+
+	return nil
+}
