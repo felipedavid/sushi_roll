@@ -22,7 +22,7 @@ Prioridade | Essencial
 ---------- | --------
 Estimativa | 3h
 Tempo Gasto (real): | ?
-Tamanho Funcional | ?
+Tamanho Funcional | 35 PF
 Analista | Lucas
 Desenvolvedor | Felipe
 Revisor | Brenno
@@ -57,7 +57,7 @@ Prioridade | Essencial
 ---------- | --------
 Estimativa | 10h
 Tempo Gasto (real): | 5h
-Tamanho Funcional | ?
+Tamanho Funcional | 35 PF
 Analista | Felipe
 Desenvolvedor | Brenno
 Revisor | Relyson
@@ -87,7 +87,7 @@ Prioridade | Essencial
 ---------- | --------
 Estimativa | 10h
 Tempo Gasto (real): | 5h
-Tamanho Funcional | ?
+Tamanho Funcional | 35 PF
 Analista | Relyson
 Desenvolvedor | Lucas
 Revisor | Felipe
@@ -118,7 +118,7 @@ Prioridade | Essencial
 ---------- | --------
 Estimativa | 10h
 Tempo Gasto (real): | 5h
-Tamanho Funcional | ?
+Tamanho Funcional | 35 PF
 Analista | Brenno
 Desenvolvedor | Relyson
 Revisor | Lucas

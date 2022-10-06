@@ -16,14 +16,18 @@ func (a *app) home(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
-		games, err := a.games.Latest()
+		games, err := a.game.Latest()
 		if err != nil {
 			a.serverError(w, err)
 			return
 		}
 
-		for _, game := range games {
-			fmt.Fprintf(w, "%v\n", *game)
+		if len(games) > 0 {
+			for _, game := range games {
+				fmt.Fprintf(w, "%+v\n", *game)
+			}
+		} else {
+			fmt.Fprintf(w, "Nenhum joguinho foi registrado")
 		}
 	default:
 		w.Header().Set("Allowed", http.MethodPost)
@@ -31,7 +35,7 @@ func (a *app) home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (a *app) game(w http.ResponseWriter, r *http.Request) {
+func (a *app) games(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		id, err := strconv.ParseInt(r.URL.Query().Get("id"), 10, 64)
@@ -40,7 +44,7 @@ func (a *app) game(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		game, err := a.games.Get(id)
+		game, err := a.game.Get(id)
 		if err != nil {
 			if errors.Is(err, models.ErrNoRecord) {
 				a.notFound(w)
@@ -50,7 +54,7 @@ func (a *app) game(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		fmt.Fprintf(w, "%v", *game)
+		fmt.Fprintf(w, "%+v", *game)
 	case http.MethodPost:
 		err := r.ParseForm()
 		if err != nil {
@@ -63,7 +67,7 @@ func (a *app) game(w http.ResponseWriter, r *http.Request) {
 		desc := r.Form.Get("description")
 		createdAt := "2022-12-12"
 
-		id, err := a.games.Insert(title, desc, createdAt)
+		id, err := a.game.Insert(title, desc, createdAt)
 		if err != nil {
 			a.serverError(w, err)
 			return
@@ -71,6 +75,22 @@ func (a *app) game(w http.ResponseWriter, r *http.Request) {
 
 		url := fmt.Sprintf("/jogo?id=%d", id)
 		http.Redirect(w, r, url, http.StatusPermanentRedirect)
+	case http.MethodDelete:
+		id, err := a.getID(r)
+		if err != nil {
+			a.notFound(w)
+			return
+		}
+
+		err = a.game.Delete(id)
+		if err != nil {
+			// TODO: Test for specific errors and respond based on them
+			a.notFound(w)
+			return
+		}
+
+		fmt.Fprintf(w, "The game with id = %d was deleted\n", id)
+
 	default:
 		w.Header().Set("Allowed", http.MethodGet)
 		a.clientError(w, http.StatusMethodNotAllowed)
