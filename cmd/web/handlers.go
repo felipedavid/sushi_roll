@@ -21,14 +21,9 @@ func (a *app) home(w http.ResponseWriter, r *http.Request) {
 			a.serverError(w, err)
 			return
 		}
-
-		if len(games) > 0 {
-			for _, game := range games {
-				fmt.Fprintf(w, "%+v\n", *game)
-			}
-		} else {
-			fmt.Fprintf(w, "Nenhum joguinho foi registrado")
-		}
+		data := newTemplateData()
+		data.Games = games
+		a.render(w, http.StatusOK, "home.tmpl", data)
 	default:
 		w.Header().Set("Allowed", http.MethodPost)
 		a.clientError(w, http.StatusMethodNotAllowed)
@@ -90,7 +85,6 @@ func (a *app) games(w http.ResponseWriter, r *http.Request) {
 		}
 
 		fmt.Fprintf(w, "The game with id = %d was deleted\n", id)
-
 	default:
 		w.Header().Set("Allowed", http.MethodGet)
 		a.clientError(w, http.StatusMethodNotAllowed)
