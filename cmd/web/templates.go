@@ -7,10 +7,19 @@ import (
 	"html/template"
 	"net/http"
 	"path/filepath"
+	"time"
 )
 
 type templateData struct {
 	Games []*models.Game
+}
+
+func HumanDate(t time.Time) string {
+	if t.IsZero() {
+		return ""
+	}
+
+	return t.UTC().Format("02 Jan 2006 at 15:04")
 }
 
 func newTemplateData() *templateData {
