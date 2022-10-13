@@ -13,9 +13,10 @@ import (
 
 // app contém maior parte do estado necessário para a operação da aplicação
 type app struct {
-	infoLog *log.Logger
-	errLog  *log.Logger
-	game    *models.GameModel
+	infoLog       *log.Logger
+	errLog        *log.Logger
+	game          *models.GameModel
+	templateCache templateCache
 }
 
 func main() {
@@ -32,10 +33,16 @@ func main() {
 		errLog.Fatal(err.Error())
 	}
 
+	tc, err := newTemplateCache()
+	if err != nil {
+		errLog.Fatal(err.Error())
+	}
+
 	a := app{
-		infoLog: infoLog,
-		errLog:  errLog,
-		game:    &models.GameModel{DB: db},
+		infoLog:       infoLog,
+		errLog:        errLog,
+		game:          &models.GameModel{DB: db},
+		templateCache: tc,
 	}
 
 	infoLog.Printf("Starting server on address %s\n", *addr)
