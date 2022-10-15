@@ -22,7 +22,7 @@ type app struct {
 func main() {
 	// Fazendo parsing dos argumentos por linha de comando
 	addr := flag.String("addr", ":4000", "HTTP listen address")
-	dsn := flag.String("dsn", "postgres://sushi:roll@localhost/sushi_roll_db?sslmode=disable", "Database Service Name")
+	dsn := flag.String("dsn", "postgres://postgres:postgres@localhost/sushi_roll_db?sslmode=disable", "Database Service Name")
 	flag.Parse()
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ltime|log.Ldate)
