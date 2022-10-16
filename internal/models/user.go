@@ -45,7 +45,7 @@ func (m *UserModel) Get(id int64) (*User, error) {
 
 	u := &User{}
 
-	if err := row.Scan(&u.Id, &u.Name, &u.email, &u.Birth, &u.CreatedAt); err != nil {
+	if err := row.Scan(&u.Id, &u.Name, &u.Email, &u.Birth, &u.CreatedAt); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNoRecord
 		}
