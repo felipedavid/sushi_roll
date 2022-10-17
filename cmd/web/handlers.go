@@ -3,9 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/felipedavid/sushi_roll/internal/models"
 	"net/http"
 	"strconv"
+
+	"github.com/felipedavid/sushi_roll/internal/models"
 )
 
 func (a *app) home(w http.ResponseWriter, r *http.Request) {
@@ -87,6 +88,23 @@ func (a *app) games(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "The game with id = %d was deleted\n", id)
 	default:
 		w.Header().Set("Allowed", http.MethodGet)
+		a.clientError(w, http.StatusMethodNotAllowed)
+	}
+}
+
+func (a *app) login(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		games, err := a.game.Latest()
+		if err != nil {
+			a.serverError(w, err)
+			return
+		}
+		data := newTemplateData()
+		data.Games = games
+		a.render(w, http.StatusOK, "login.tmpl", data)
+	default:
+		w.Header().Set("Allowed", http.MethodPost)
 		a.clientError(w, http.StatusMethodNotAllowed)
 	}
 }
