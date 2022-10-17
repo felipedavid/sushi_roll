@@ -17,12 +17,16 @@ type app struct {
 	errLog        *log.Logger
 	game          *models.GameModel
 	templateCache templateCache
+	env           string
 }
 
 func main() {
 	// Fazendo parsing dos argumentos por linha de comando
 	addr := flag.String("addr", ":4000", "HTTP listen address")
-	dsn := flag.String("dsn", "postgres://postgres:postgres@localhost/sushi_roll_db?sslmode=disable", "Database Service Name")
+	dsn := flag.String("dsn",
+		"postgres://postgres:postgres@localhost/sushi_roll_db?sslmode=disable",
+		"Database Service Name")
+	env := *flag.String("env", "development", "Environment (development|production)")
 	flag.Parse()
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ltime|log.Ldate)
@@ -43,6 +47,7 @@ func main() {
 		errLog:        errLog,
 		game:          &models.GameModel{DB: db},
 		templateCache: tc,
+		env:           env,
 	}
 
 	infoLog.Printf("Starting server on address %s\n", *addr)
