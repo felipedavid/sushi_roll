@@ -8,11 +8,11 @@ import (
 
 // Comment representa uma linha da tabela "comments"
 type Comment struct {
-	Id          int64
-	user        string
-  content     string
-	date        time.time
-	CreatedAt   time.Time
+	Id        int64
+	user      string
+	content   string
+	date      time.Time
+	CreatedAt time.Time
 }
 
 // CommentModel é um objeto que representa as ações que podem ser realizadas contra a tabela "comments"
@@ -45,7 +45,7 @@ func (m *CommentModel) Get(id int64) (*Comment, error) {
 
 	c := &Comment{}
 
-	if err := row.Scan(&u.Id, &u.user, &u.content, &u.date, &u.CreatedAt); err != nil {
+	if err := row.Scan(&c.Id, &c.user, &c.content, &c.date, &c.CreatedAt); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNoRecord
 		}
@@ -65,3 +65,4 @@ func (m *CommentModel) Delete(id int64) error {
 	}
 
 	return nil
+}
