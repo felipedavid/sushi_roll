@@ -14,7 +14,7 @@ https://medium.com/baixada-nerd/criando-um-crud-simples-em-go-3640d3618a67
 
 ## Documentos
 
-[Documento de visão](https://github.com/felipedavid/sushi_roll/blob/main/docs/documento_visao.md)<br/>
-[Documento de User Story](https://github.com/felipedavid/sushi_roll/blob/main/docs/documento_use_story.md)<br/>
+[Documento de visão](https://github.com/felipedavid/sushi_roll/blob/main/docs/visao.md)<br/>
+[Documento de User Story](https://github.com/felipedavid/sushi_roll/blob/main/docs/use_story.md)<br/>
 [Diagrama de dados](https://github.com/felipedavid/sushi_roll/blob/main/docs/modelo_de_dados.md)<br/>
 [Documento de Iteração](https://github.com/felipedavid/sushi_roll/blob/main/docs/iteracao.md)<br/>
