@@ -9,6 +9,10 @@ import (
 	"github.com/felipedavid/sushi_roll/internal/models"
 )
 
+func ping(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("OK"))
+}
+
 func (a *app) home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		a.notFound(w)
