@@ -11,6 +11,7 @@ sonar.test.exclusions=**/vendor/**
 #sonar.analysis.mode=preview
 sonar.issuesReport.html.enable=true
 sonar.report.export.path=report.json
+sonar.go.coverage.reportPaths=coverage.out
 
 # Change the host.url to point to the
 # sonarqube server (default localhost)

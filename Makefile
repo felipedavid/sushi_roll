@@ -20,4 +20,7 @@ migrateup:
 migratedown:
 	migrate -path db/migration -database $(dsn) -verbose down
 
-.PHONY: postgres createuser createdb dropdb migrateup migratedown
+run:
+	go run ./cmd/web
+
+.PHONY: postgres createuser createdb dropdb migrateup migratedown run
