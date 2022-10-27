@@ -16,7 +16,8 @@ jobs:
       uses: actions/setup-go@v2
     - name: Generate go coverage file
       run: 
-        pwd &&
+        go mod download
+        go mod tidy
         go test ./cmd/web -coverprofile=coverage.out
     - uses: actions/checkout@v2
       with:
