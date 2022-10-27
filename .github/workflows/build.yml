@@ -14,8 +14,6 @@ jobs:
     steps:
     - name: Setup Go
       uses: actions/setup-go@v2
-      with:
-        go-version: ‘1.18.0’
     - name: Generate go coverage file
       run: 
         go test ./cmd/web -coverprofile=coverage.out
