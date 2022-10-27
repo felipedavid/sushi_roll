@@ -14,12 +14,9 @@ jobs:
     steps:
     - name: Setup Go
       uses: actions/setup-go@v2
-    - name: Go init module
-      run: 
-        go mod init github.com/felipedavid/sushi_roll
     - name: Generate go coverage file
       run: 
-        go test ./cmd/web -coverprofile=coverage.out
+        go test cmd/web -coverprofile=coverage.out
     - uses: actions/checkout@v2
       with:
         # Disabling shallow clone is recommended for improving relevancy of reporting
