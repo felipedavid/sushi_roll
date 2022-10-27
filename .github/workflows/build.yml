@@ -16,7 +16,7 @@ jobs:
       uses: actions/setup-go@v2
     - name: Go init module
       run: 
-        go mod init
+        go mod init github.com/felipedavid/sushi_roll
     - name: Generate go coverage file
       run: 
         go test ./cmd/web -coverprofile=coverage.out
