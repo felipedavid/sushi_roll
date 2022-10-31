@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/julienschmidt/httprouter"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 func (a *app) routes() http.Handler {
@@ -16,6 +17,8 @@ func (a *app) routes() http.Handler {
 	router.HandlerFunc(http.MethodPost, "/games", a.createGame)
 	router.HandlerFunc(http.MethodDelete, "/games", a.deleteGame)
 	router.HandlerFunc(http.MethodGet, "/login", a.loginPage)
+	router.HandlerFunc(http.MethodGet, "/logup", a.logupPage)
+	router.HandlerFunc(http.MethodGet, "/jogos", a.jogosPage)
 
 	return a.logRequest(router)
 }
