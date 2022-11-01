@@ -11,6 +11,11 @@ createdb:
 dropdb:
 	docker exec -it sushi_roll_postgres dropdb sushi_roll_db
 
+sonar:
+	go test ./cmd/web -coverprofile=coverage.out && \
+		docker run --rm -e SONAR_HOST_URL="http://labens.dct.ufrn.br/sonarqube" -e SONAR_LOGIN="$(SONAR_TOKEN)" -v "$(PWD):/usr/src" sonarsource/sonar-scanner-cli && \
+		rm ./coverage.out
+
 
 dsn = "postgresql://postgres:postgres@localhost:5432/sushi_roll_db?sslmode=disable"
 
@@ -20,4 +25,7 @@ migrateup:
 migratedown:
 	migrate -path db/migration -database $(dsn) -verbose down
 
-.PHONY: postgres createuser createdb dropdb migrateup migratedown
+run:
+	go run ./cmd/web
+
+.PHONY: postgres createuser createdb dropdb migrateup migratedown run sonar

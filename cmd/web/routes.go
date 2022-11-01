@@ -1,12 +1,24 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/julienschmidt/httprouter"
+)
 
 func (a *app) routes() http.Handler {
-	mux := http.NewServeMux()
+	router := httprouter.New()
 
-	mux.HandleFunc("/", a.home)
-	mux.HandleFunc("/games", a.games)
+	fileServer := http.FileServer(http.Dir("./ui/static"))
+	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer))
 
-	return a.logRequest(mux)
+	router.HandlerFunc(http.MethodGet, "/", a.homePage)
+	router.HandlerFunc(http.MethodGet, "/game", a.viewGame)
+	router.HandlerFunc(http.MethodPost, "/games", a.createGame)
+	router.HandlerFunc(http.MethodDelete, "/games", a.deleteGame)
+	router.HandlerFunc(http.MethodGet, "/login", a.loginPage)
+	router.HandlerFunc(http.MethodGet, "/logup", a.logupPage)
+	router.HandlerFunc(http.MethodGet, "/games", a.gamesPage)
+
+	return a.logRequest(router)
 }
