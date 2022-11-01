@@ -105,7 +105,7 @@ func (a *app) logupPage(w http.ResponseWriter, r *http.Request) {
 	a.render(w, http.StatusOK, "logup.tmpl", data)
 }
 
-func (a *app) jogosPage(w http.ResponseWriter, r *http.Request) {
+func (a *app) gamesPage(w http.ResponseWriter, r *http.Request) {
 	games, err := a.game.Latest()
 	if err != nil {
 		a.serverError(w, err)
@@ -113,5 +113,5 @@ func (a *app) jogosPage(w http.ResponseWriter, r *http.Request) {
 	}
 	data := newTemplateData()
 	data.Games = games
-	a.render(w, http.StatusOK, "jogos.tmpl", data)
+	a.render(w, http.StatusOK, "games.tmpl", data)
 }
