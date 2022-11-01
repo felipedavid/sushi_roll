@@ -83,28 +83,6 @@ func (a *app) deleteGame(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "The game with id = %d was deleted\n", id)
 }
 
-func (a *app) loginPage(w http.ResponseWriter, r *http.Request) {
-	games, err := a.game.Latest()
-	if err != nil {
-		a.serverError(w, err)
-		return
-	}
-	data := newTemplateData()
-	data.Games = games
-	a.render(w, http.StatusOK, "login.tmpl", data)
-}
-
-func (a *app) logupPage(w http.ResponseWriter, r *http.Request) {
-	games, err := a.game.Latest()
-	if err != nil {
-		a.serverError(w, err)
-		return
-	}
-	data := newTemplateData()
-	data.Games = games
-	a.render(w, http.StatusOK, "logup.tmpl", data)
-}
-
 func (a *app) gamesPage(w http.ResponseWriter, r *http.Request) {
 	games, err := a.game.Latest()
 	if err != nil {
