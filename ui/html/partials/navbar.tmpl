@@ -1,9 +1,8 @@
 {{define "navbar"}}
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark" style="background-color: #212529">
-        <div class="container-fluid col-9 m-auto">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light col-9 m-auto" style="background-image: linear-gradient(-90deg, #9999ff, #88f4ff)">
+        <div class="container-fluid">
           <a class="navbar-brand" href="/">
-            <img src="/static/img/sushiroll.png" alt="" width="50" height="50" class="d-inline-block">
-           SUSHI ROLL
+            <img src="/static/img/icon.png" alt="" width="125" height="50" class="d-inline-block">
           </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -11,17 +10,15 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/login">Login</a>
+                <a class="nav-link active" aria-current="page" href="/login">Login/Logup</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page">-</a>
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/jogos">Jogos</a>
+                <a class="nav-link active" aria-current="page" href="/games">Listar Jogos</a>
               </li>  
             </ul>
             <form class="d-flex" role="search">
               <input class="form-control me-2" type="search" placeholder="Pesquise seu jogo..." aria-label="Search">
-              <button class="btn btn-outline-light" type="submit">Pesquisar</button>
+              <button class="btn btn-outline-dark" type="submit">Pesquisar</button>
             </form>
           </div>
         </div>

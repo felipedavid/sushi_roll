@@ -3,9 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/felipedavid/sushi_roll/internal/models"
 	"net/http"
 	"strconv"
+
+	"github.com/felipedavid/sushi_roll/internal/models"
 )
 
 func ping(w http.ResponseWriter, r *http.Request) {
@@ -91,4 +92,26 @@ func (a *app) loginPage(w http.ResponseWriter, r *http.Request) {
 	data := newTemplateData()
 	data.Games = games
 	a.render(w, http.StatusOK, "login.tmpl", data)
+}
+
+func (a *app) logupPage(w http.ResponseWriter, r *http.Request) {
+	games, err := a.game.Latest()
+	if err != nil {
+		a.serverError(w, err)
+		return
+	}
+	data := newTemplateData()
+	data.Games = games
+	a.render(w, http.StatusOK, "logup.tmpl", data)
+}
+
+func (a *app) gamesPage(w http.ResponseWriter, r *http.Request) {
+	games, err := a.game.Latest()
+	if err != nil {
+		a.serverError(w, err)
+		return
+	}
+	data := newTemplateData()
+	data.Games = games
+	a.render(w, http.StatusOK, "games.tmpl", data)
 }
