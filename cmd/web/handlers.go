@@ -115,3 +115,37 @@ func (a *app) gamesPage(w http.ResponseWriter, r *http.Request) {
 	data.Games = games
 	a.render(w, http.StatusOK, "games.tmpl", data)
 }
+
+func (a *app) userSignUp(w http.ResponseWriter, r *http.Request) {
+	games, err := a.game.Latest()
+	if err != nil {
+		a.serverError(w, err)
+		return
+	}
+	data := newTemplateData()
+	data.Games = games
+	a.render(w, http.StatusOK, "signup.tmpl", data)
+}
+
+func (a *app) userSignUpPost(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Creating the account")
+}
+
+func (a *app) userLogin(w http.ResponseWriter, r *http.Request) {
+	games, err := a.game.Latest()
+	if err != nil {
+		a.serverError(w, err)
+		return
+	}
+	data := newTemplateData()
+	data.Games = games
+	a.render(w, http.StatusOK, "login.tmpl", data)
+}
+
+func (a *app) userLoginPost(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Logging in as the user...")
+}
+
+func (a *app) userLogoutPost(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Logging out.")
+}
