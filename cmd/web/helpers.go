@@ -22,3 +22,17 @@ func (a *app) notFound(w http.ResponseWriter) {
 func (a *app) getID(r *http.Request) (int64, error) {
 	return strconv.ParseInt(r.URL.Query().Get("id"), 10, 64)
 }
+
+func (a *app) decodePostForm(r *http.Request, dst any) error {
+	err := r.ParseForm()
+	if err != nil {
+		return err
+	}
+
+	err = a.formDecoder.Decode(dst, r.PostForm)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

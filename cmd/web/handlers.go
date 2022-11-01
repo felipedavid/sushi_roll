@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/felipedavid/sushi_roll/internal/validator"
 	"net/http"
 	"strconv"
 
@@ -19,7 +20,7 @@ func (a *app) homePage(w http.ResponseWriter, r *http.Request) {
 		a.serverError(w, err)
 		return
 	}
-	data := newTemplateData()
+	data := a.newTemplateData(r)
 	data.Games = games
 	a.render(w, http.StatusOK, "home.tmpl", data)
 }
@@ -89,7 +90,7 @@ func (a *app) gamesPage(w http.ResponseWriter, r *http.Request) {
 		a.serverError(w, err)
 		return
 	}
-	data := newTemplateData()
+	data := a.newTemplateData(r)
 	data.Games = games
 	a.render(w, http.StatusOK, "games.tmpl", data)
 }
@@ -100,7 +101,7 @@ func (a *app) userSignUp(w http.ResponseWriter, r *http.Request) {
 		a.serverError(w, err)
 		return
 	}
-	data := newTemplateData()
+	data := a.newTemplateData(r)
 	data.Games = games
 	a.render(w, http.StatusOK, "signup.tmpl", data)
 }
@@ -109,19 +110,41 @@ func (a *app) userSignUpPost(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Creating the account")
 }
 
+type userLoginForm struct {
+	Email               string `form:"email"`
+	Password            string `form:"password"`
+	validator.Validator `form:"-"`
+}
+
 func (a *app) userLogin(w http.ResponseWriter, r *http.Request) {
-	games, err := a.game.Latest()
-	if err != nil {
-		a.serverError(w, err)
-		return
-	}
-	data := newTemplateData()
-	data.Games = games
+	data := a.newTemplateData(r)
+	data.Form = userLoginForm{}
 	a.render(w, http.StatusOK, "login.tmpl", data)
 }
 
 func (a *app) userLoginPost(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Logging in as the user...")
+	var form userLoginForm
+
+	err := a.decodePostForm(r, &form)
+	if err != nil {
+		a.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	// Validate the form contents using our helper functions.
+	form.CheckField(validator.NotBlank(form.Email), "email", "Insira seu email")
+	form.CheckField(validator.Matches(form.Email, validator.EmailRX), "email", "É necessário ser um email válido")
+	form.CheckField(validator.NotBlank(form.Password), "password", "Insira sua senha")
+	form.CheckField(validator.MinChars(form.Password, 8), "password", "Esse campo tem que ter pelomenos 8 caracteres")
+
+	if !form.Valid() {
+		data := a.newTemplateData(r)
+		data.Form = form
+		a.render(w, http.StatusOK, "login.tmpl", data)
+		return
+	}
+
+	fmt.Fprintf(w, "User should be logged in.")
 }
 
 func (a *app) userLogoutPost(w http.ResponseWriter, r *http.Request) {

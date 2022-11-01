@@ -12,6 +12,7 @@ import (
 
 type templateData struct {
 	Games []*models.Game
+	Form  any
 }
 
 func HumanDate(t time.Time) string {
@@ -22,7 +23,7 @@ func HumanDate(t time.Time) string {
 	return t.UTC().Format("02 Jan 2006 at 15:04")
 }
 
-func newTemplateData() *templateData {
+func (a *app) newTemplateData(r *http.Request) *templateData {
 	return &templateData{}
 }
 

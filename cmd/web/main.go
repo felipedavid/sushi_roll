@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"flag"
 	"github.com/felipedavid/sushi_roll/internal/models"
+	"github.com/go-playground/form/v4"
 	"log"
 	"net/http"
 	"os"
@@ -13,11 +14,15 @@ import (
 
 // app contém maior parte do estado necessário para a operação da aplicação
 type app struct {
-	infoLog       *log.Logger
-	errLog        *log.Logger
-	game          *models.GameModel
+	infoLog *log.Logger
+	errLog  *log.Logger
+
+	game *models.GameModel
+	user *models.UserModel
+
 	templateCache templateCache
 	env           string
+	formDecoder   *form.Decoder
 }
 
 func main() {
@@ -43,11 +48,15 @@ func main() {
 	}
 
 	a := app{
-		infoLog:       infoLog,
-		errLog:        errLog,
-		game:          &models.GameModel{DB: db},
+		infoLog: infoLog,
+		errLog:  errLog,
+
+		game: &models.GameModel{DB: db},
+		user: &models.UserModel{DB: db},
+
 		templateCache: tc,
 		env:           env,
+		formDecoder:   form.NewDecoder(),
 	}
 
 	infoLog.Printf("Starting server on address %s\n", *addr)
