@@ -20,8 +20,8 @@ RF004 | Excluir Jogo  |
 
 Prioridade | Essencial
 ---------- | --------
-Estimativa | 3h
-Tempo Gasto (real): | ?
+Estimativa | 10h
+Tempo Gasto (real): | 5h 
 Tamanho Funcional | 35 PF
 Analista | Lucas
 Desenvolvedor | Felipe
