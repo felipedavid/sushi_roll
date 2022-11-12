@@ -32,3 +32,60 @@ func TestPing(t *testing.T) {
 
 	assert.Equal(t, string(body), "OK")
 }
+
+func TestViewGame(t *testing.T) {
+	a := newTestApplication(t)
+	ts := newTestServer(t, a.routes())
+	defer ts.Close()
+
+	tests := []struct {
+		name     string
+		urlPath  string
+		wantCode int
+		wantBody string
+	}{
+		{
+			name:     "Valid ID",
+			urlPath:  "/game?id=1",
+			wantCode: http.StatusOK,
+			wantBody: "Best game of all time!!!",
+		},
+		{
+			name:     "Non-existing ID",
+			urlPath:  "/game?id=2",
+			wantCode: http.StatusNotFound,
+		},
+		{
+			name:     "Negative ID",
+			urlPath:  "/game?id=-1",
+			wantCode: http.StatusNotFound,
+		},
+		{
+			name:     "Decimal ID",
+			urlPath:  "/game?id=0.23",
+			wantCode: http.StatusNotFound,
+		},
+		{
+			name:     "String ID",
+			urlPath:  "/game?id=whatever",
+			wantCode: http.StatusNotFound,
+		},
+		{
+			name:     "Empty ID",
+			urlPath:  "/game",
+			wantCode: http.StatusNotFound,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			code, _, body := ts.get(t, tt.urlPath)
+
+			assert.Equal(t, code, tt.wantCode)
+
+			if body != "" {
+				assert.StringContains(t, body, tt.wantBody)
+			}
+		})
+	}
+}
