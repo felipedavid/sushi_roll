@@ -15,6 +15,13 @@ type Game struct {
 	CreatedAt   time.Time
 }
 
+type GameModelInterface interface {
+	Insert(title, description, release string) (int64, error)
+	Get(id int64) (*Game, error)
+	Latest() ([]*Game, error)
+	Delete(id int64) error
+}
+
 // GameModel é um objeto que representa as ações que podem ser realizadas contra a tabela "games"
 type GameModel struct {
 	DB *sql.DB

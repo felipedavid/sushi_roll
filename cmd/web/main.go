@@ -15,7 +15,7 @@ import (
 type app struct {
 	infoLog       *log.Logger
 	errLog        *log.Logger
-	game          *models.GameModel
+	game          models.GameModelInterface
 	templateCache templateCache
 	env           string
 }
