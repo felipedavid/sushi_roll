@@ -3,10 +3,11 @@ package main
 import (
 	"database/sql"
 	"flag"
-	"github.com/felipedavid/sushi_roll/internal/models"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/felipedavid/sushi_roll/internal/models"
 
 	_ "github.com/lib/pq"
 )
@@ -16,6 +17,7 @@ type app struct {
 	infoLog       *log.Logger
 	errLog        *log.Logger
 	game          models.GameModelInterface
+	comment       models.CommentModel
 	templateCache templateCache
 	env           string
 }

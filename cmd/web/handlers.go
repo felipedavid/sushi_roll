@@ -115,3 +115,13 @@ func (a *app) gamesPage(w http.ResponseWriter, r *http.Request) {
 	data.Games = games
 	a.render(w, http.StatusOK, "games.tmpl", data)
 }
+
+func (a *app) createComment(w http.ResponseWriter, r http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		a.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	comment := r.Form.Get("content")
+}
