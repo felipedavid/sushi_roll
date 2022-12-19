@@ -31,3 +31,6 @@ $ make migrateup
 # Iniciando servidor
 $ make run
 ```
+
+## API
+[Coleção Postman](https://mega.nz/file/xVAzgQqA#uaSTeDIqJ0T7rrPcXVCIBpxB8t_a6GdwcP_lEk-TKxM)
