@@ -119,7 +119,7 @@ func (a *app) gamesPage(w http.ResponseWriter, r *http.Request) {
 func (a *app) viewComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.ParseInt(ps.ByName("id"), 10, 64)
 	if err != nil || id <= 0 {
-		a.serverError(w, err)
+		a.notFound(w)
 		return
 	}
 
@@ -176,7 +176,7 @@ func (a *app) deleteComment(w http.ResponseWriter, r *http.Request, ps httproute
 func (a *app) viewCategory(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := strconv.ParseInt(ps.ByName("id"), 10, 64)
 	if err != nil || id <= 0 {
-		a.serverError(w, err)
+		a.notFound(w)
 		return
 	}
 

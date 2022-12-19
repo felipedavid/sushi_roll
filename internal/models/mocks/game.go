@@ -1,8 +1,9 @@
 package mocks
 
 import (
-	"github.com/felipedavid/sushi_roll/internal/models"
 	"time"
+
+	"github.com/felipedavid/sushi_roll/internal/models"
 )
 
 var mockGame = &models.Game{
