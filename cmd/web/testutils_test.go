@@ -54,3 +54,21 @@ func (ts *testServer) get(t *testing.T, urlPath string) (int, http.Header, strin
 	bytes.TrimSpace(body)
 	return rs.StatusCode, rs.Header, string(body)
 }
+
+// Implement a get() method on our custom testServer type. This makes a GET
+// request to a given url path using the test server client, and returns the
+// response status code, headers and body.
+func (ts *testServer) delete(t *testing.T, urlPath string) (int, http.Header, string) {
+	r, _ := http.NewRequest("DELETE", ts.URL+urlPath, nil)
+	rs, err := ts.Client().Do(r)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer rs.Body.Close()
+	body, err := io.ReadAll(rs.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	bytes.TrimSpace(body)
+	return rs.StatusCode, rs.Header, string(body)
+}
