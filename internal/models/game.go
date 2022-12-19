@@ -29,14 +29,10 @@ type GameModel struct {
 
 // Insert irá inserir um novo jogo no banco de dados
 func (m *GameModel) Insert(title, description, release string) (int64, error) {
-	stmt := `INSERT INTO games VALUES(DEFAULT, $1, $2, $3)`
+	stmt := `INSERT INTO games VALUES(DEFAULT, $1, $2, $3) RETURNING id`
 
-	res, err := m.DB.Exec(stmt, title, description, release)
-	if err != nil {
-		return 0, err
-	}
-
-	id, err := res.LastInsertId()
+	var id int64
+	err := m.DB.QueryRow(stmt, title, description, release).Scan(&id)
 	if err != nil {
 		return 0, err
 	}

@@ -16,8 +16,9 @@ import (
 type app struct {
 	infoLog       *log.Logger
 	errLog        *log.Logger
-	game          models.GameModelInterface
-	comment       models.CommentModel
+	games         models.GameModelInterface
+	comments      models.CommentModelInterface
+	categories    models.CategoryModelInterface
 	templateCache templateCache
 	env           string
 }
@@ -47,7 +48,9 @@ func main() {
 	a := app{
 		infoLog:       infoLog,
 		errLog:        errLog,
-		game:          &models.GameModel{DB: db},
+		games:         &models.GameModel{DB: db},
+		comments:      &models.CommentModel{DB: db},
+		categories:    &models.CategoryModel{DB: db},
 		templateCache: tc,
 		env:           env,
 	}

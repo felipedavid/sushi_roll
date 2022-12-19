@@ -16,7 +16,9 @@ type Comment struct {
 }
 
 type CommentModelInterface interface {
-	Insert(userID, movieID, content string) (int64, error)
+	Insert(userID, gameID int64, content string) (int64, error)
+	Get(id int64) (*Comment, error)
+	Delete(id int64) error
 }
 
 // CommentModel é um objeto que representa as ações que podem ser realizadas contra a tabela "comments"
@@ -25,15 +27,11 @@ type CommentModel struct {
 }
 
 // Insert irá inserir um novo comentário no banco de dados
-func (m *CommentModel) Insert(userID, gameID, content string) (int64, error) {
-	stmt := `INSERT INTO comments VALUES(DEFAULT, $1, $2, $3, DEFAULT)`
+func (m *CommentModel) Insert(userID, gameID int64, content string) (int64, error) {
+	stmt := `INSERT INTO comments VALUES(DEFAULT, $1, $2, $3, DEFAULT) RETURNING id`
 
-	res, err := m.DB.Exec(stmt, userID, gameID, content)
-	if err != nil {
-		return 0, err
-	}
-
-	id, err := res.LastInsertId()
+	var id int64
+	err := m.DB.QueryRow(stmt, userID, gameID, content).Scan(&id)
 	if err != nil {
 		return 0, err
 	}
@@ -49,7 +47,7 @@ func (m *CommentModel) Get(id int64) (*Comment, error) {
 
 	c := &Comment{}
 
-	if err := row.Scan(&c.Id, &c.UserID, &c.Content, &c.CreatedAt); err != nil {
+	if err := row.Scan(&c.Id, &c.UserID, &c.GameID, &c.Content, &c.CreatedAt); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNoRecord
 		}
