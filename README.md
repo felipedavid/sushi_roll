@@ -18,3 +18,19 @@ https://medium.com/baixada-nerd/criando-um-crud-simples-em-go-3640d3618a67
 [Documento de User Story](https://github.com/felipedavid/sushi_roll/blob/main/docs/user_story.md)<br/>
 [Diagrama de dados](https://github.com/felipedavid/sushi_roll/blob/main/docs/modelo_de_dados.md)<br/>
 [Documento de Iteração](https://github.com/felipedavid/sushi_roll/blob/main/docs/iteracao.md)<br/>
+
+
+## Running ([golang-migrate](https://github.com/golang-migrate/migrate/releases) e [Go](https://go.dev/dl/) precisam estar instalados)
+```console
+# Preparando banco de dados
+$ make postgre
+$ make createuser
+$ make createdb
+$ make migrateup
+
+# Iniciando servidor
+$ make run
+```
+
+## API
+[Coleção Postman](https://mega.nz/file/xVAzgQqA#uaSTeDIqJ0T7rrPcXVCIBpxB8t_a6GdwcP_lEk-TKxM)

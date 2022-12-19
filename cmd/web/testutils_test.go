@@ -2,12 +2,13 @@ package main
 
 import (
 	"bytes"
-	"github.com/felipedavid/sushi_roll/internal/models/mocks"
 	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/felipedavid/sushi_roll/internal/models/mocks"
 )
 
 func newTestApplication(t *testing.T) *app {
@@ -20,7 +21,9 @@ func newTestApplication(t *testing.T) *app {
 		errLog:        log.New(io.Discard, "", 0),
 		infoLog:       log.New(io.Discard, "", 0),
 		templateCache: templateCache,
-		game:          &mocks.GameModel{},
+		games:         &mocks.GameModel{},
+		comments:      &mocks.CommentModel{},
+		categories:    &mocks.CategoryModel{},
 	}
 }
 

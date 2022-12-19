@@ -9,10 +9,16 @@ import (
 // Comment representa uma linha da tabela "comments"
 type Comment struct {
 	Id        int64
-	user      string
-	content   string
-	date      time.Time
+	UserID    int64
+	GameID    int64
+	Content   string
 	CreatedAt time.Time
+}
+
+type CommentModelInterface interface {
+	Insert(userID, gameID int64, content string) (int64, error)
+	Get(id int64) (*Comment, error)
+	Delete(id int64) error
 }
 
 // CommentModel é um objeto que representa as ações que podem ser realizadas contra a tabela "comments"
@@ -21,15 +27,11 @@ type CommentModel struct {
 }
 
 // Insert irá inserir um novo comentário no banco de dados
-func (m *CommentModel) Insert(user, content, date string) (int64, error) {
-	stmt := `INSERT INTO comment VALUES(DEFAULT, $1, $2, $3)`
+func (m *CommentModel) Insert(userID, gameID int64, content string) (int64, error) {
+	stmt := `INSERT INTO comments VALUES(DEFAULT, $1, $2, $3, DEFAULT) RETURNING id`
 
-	res, err := m.DB.Exec(stmt, user, content, date)
-	if err != nil {
-		return 0, err
-	}
-
-	id, err := res.LastInsertId()
+	var id int64
+	err := m.DB.QueryRow(stmt, userID, gameID, content).Scan(&id)
 	if err != nil {
 		return 0, err
 	}
@@ -39,13 +41,13 @@ func (m *CommentModel) Insert(user, content, date string) (int64, error) {
 
 // get irá retonar um comentário específico baseado no "id"
 func (m *CommentModel) Get(id int64) (*Comment, error) {
-	stmt := `SELECT id, user, content, date, created_at FROM comment WHERE id = $1`
+	stmt := `SELECT * FROM comments WHERE id = $1`
 
 	row := m.DB.QueryRow(stmt, id)
 
 	c := &Comment{}
 
-	if err := row.Scan(&c.Id, &c.user, &c.content, &c.date, &c.CreatedAt); err != nil {
+	if err := row.Scan(&c.Id, &c.UserID, &c.GameID, &c.Content, &c.CreatedAt); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNoRecord
 		}
@@ -56,7 +58,7 @@ func (m *CommentModel) Get(id int64) (*Comment, error) {
 }
 
 func (m *CommentModel) Delete(id int64) error {
-	stmt := `DELETE FROM comment WHERE id = $1`
+	stmt := `DELETE FROM comments WHERE id = $1`
 
 	_, err := m.DB.Exec(stmt, id)
 	if err != nil {

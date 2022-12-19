@@ -3,10 +3,11 @@ package main
 import (
 	"database/sql"
 	"flag"
-	"github.com/felipedavid/sushi_roll/internal/models"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/felipedavid/sushi_roll/internal/models"
 
 	_ "github.com/lib/pq"
 )
@@ -15,7 +16,9 @@ import (
 type app struct {
 	infoLog       *log.Logger
 	errLog        *log.Logger
-	game          models.GameModelInterface
+	games         models.GameModelInterface
+	comments      models.CommentModelInterface
+	categories    models.CategoryModelInterface
 	templateCache templateCache
 	env           string
 }
@@ -45,7 +48,9 @@ func main() {
 	a := app{
 		infoLog:       infoLog,
 		errLog:        errLog,
-		game:          &models.GameModel{DB: db},
+		games:         &models.GameModel{DB: db},
+		comments:      &models.CommentModel{DB: db},
+		categories:    &models.CategoryModel{DB: db},
 		templateCache: tc,
 		env:           env,
 	}
