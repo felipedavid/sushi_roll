@@ -31,6 +31,11 @@ CREATE TABLE roles (
 INSERT INTO roles (id, name) VALUES (0, 'admin');
 INSERT INTO roles (id, name) VALUES (1, 'user');
 
+CREATE TABLE categories (
+  id bigserial PRIMARY KEY,
+  title varchar NOT NULL
+);
+
 ALTER TABLE comments ADD CONSTRAINT fk_comment_user
   FOREIGN KEY (user_id) REFERENCES users(id);
 ALTER TABLE comments ADD CONSTRAINT fk_comment_game

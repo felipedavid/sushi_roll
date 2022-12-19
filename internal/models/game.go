@@ -29,7 +29,7 @@ type GameModel struct {
 
 // Insert irá inserir um novo jogo no banco de dados
 func (m *GameModel) Insert(title, description, release string) (int64, error) {
-	stmt := `INSERT INTO game VALUES(DEFAULT, $1, $2, $3)`
+	stmt := `INSERT INTO games VALUES(DEFAULT, $1, $2, $3)`
 
 	res, err := m.DB.Exec(stmt, title, description, release)
 	if err != nil {
@@ -46,7 +46,7 @@ func (m *GameModel) Insert(title, description, release string) (int64, error) {
 
 // Get irá retonar um jogo específico baseado no "id"
 func (m *GameModel) Get(id int64) (*Game, error) {
-	stmt := `SELECT id, title, description, release_at, created_at FROM game WHERE id = $1`
+	stmt := `SELECT id, title, description, release_at, created_at FROM games WHERE id = $1`
 
 	row := m.DB.QueryRow(stmt, id)
 
@@ -66,7 +66,7 @@ func (m *GameModel) Get(id int64) (*Game, error) {
 // IMPORTANTE: Essa função será substituida futuramente por algo mais dinâmico e útil,
 // então deve ser usada apenas para prototipação de funcionalidades
 func (m *GameModel) Latest() ([]*Game, error) {
-	stmt := `SELECT id, title, description, release_at, created_at FROM game LIMIT 10`
+	stmt := `SELECT id, title, description, release_at, created_at FROM games LIMIT 10`
 
 	rows, err := m.DB.Query(stmt)
 	if err != nil {
@@ -95,7 +95,7 @@ func (m *GameModel) Latest() ([]*Game, error) {
 }
 
 func (m *GameModel) Delete(id int64) error {
-	stmt := `DELETE FROM game WHERE id = $1`
+	stmt := `DELETE FROM games WHERE id = $1`
 
 	_, err := m.DB.Exec(stmt, id)
 	if err != nil {

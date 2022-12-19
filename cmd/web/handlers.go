@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/felipedavid/sushi_roll/internal/models"
+	"github.com/julienschmidt/httprouter"
 )
 
 func ping(w http.ResponseWriter, r *http.Request) {
@@ -46,8 +47,8 @@ func (a *app) createGame(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, url, http.StatusPermanentRedirect)
 }
 
-func (a *app) viewGame(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(r.URL.Query().Get("id"), 10, 64)
+func (a *app) viewGame(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	id, err := strconv.ParseInt(ps.ByName("id"), 10, 64)
 	if err != nil || id < 1 {
 		a.notFound(w)
 		return
@@ -66,8 +67,8 @@ func (a *app) viewGame(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%+v", *game)
 }
 
-func (a *app) deleteGame(w http.ResponseWriter, r *http.Request) {
-	id, err := a.getID(r)
+func (a *app) deleteGame(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	id, err := strconv.ParseInt(ps.ByName("id"), 10, 64)
 	if err != nil {
 		a.notFound(w)
 		return
@@ -116,12 +117,9 @@ func (a *app) gamesPage(w http.ResponseWriter, r *http.Request) {
 	a.render(w, http.StatusOK, "games.tmpl", data)
 }
 
-func (a *app) createComment(w http.ResponseWriter, r http.Request) {
-	err := r.ParseForm()
-	if err != nil {
-		a.clientError(w, http.StatusBadRequest)
-		return
-	}
+func (a *app) viewComment(w http.ResponseWriter, r *http.Request) {
 
-	comment := r.Form.Get("content")
+}
+
+func (a *app) createComment(w http.ResponseWriter, r http.Request) {
 }
