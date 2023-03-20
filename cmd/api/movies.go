@@ -19,8 +19,7 @@ func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		movieID, err := strconv.Atoi(params[idIndex])
 		if err != nil || movieID <= 0 {
-			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprintf(w, "Invalid movie ID")
+			app.notFoundResponse(w, r)
 			return
 		}
 
@@ -36,15 +35,13 @@ func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
 
 		err = app.writeJSON(w, http.StatusOK, envelope{"movie": movie}, nil)
 		if err != nil {
-			app.errLogger.Println(err.Error())
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			app.serverErrorResponse(w, r, err)
 			return
 		}
 	case http.MethodPost:
 		fmt.Fprintf(w, "Creating a movie")
 	default:
 		w.Header().Set("Allow", "GET, POST")
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		fmt.Fprintf(w, http.StatusText(http.StatusMethodNotAllowed))
+		app.methodNotAllowedResponse(w, r)
 	}
 }
