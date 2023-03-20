@@ -1,47 +1,58 @@
 package main
 
 import (
-    "log"
-    "flag"
-    "os"
-    "net/http"
-    "time"
+	"flag"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"time"
 )
 
+// We should be generating the version dynamically at build time
 const version = "1.0.0"
 
 type config struct {
-    addr string
-    env string
+	port int
+	env  string
 }
 
-type app struct {
-    config config
-    logger *log.Logger
+// application stores the dependencies for our handlers, helpers and middlewares
+type application struct {
+	config     config
+	errLogger  *log.Logger
+	infoLogger *log.Logger
 }
 
 func main() {
-    var cfg config
-    flag.StringVar(&cfg.addr, "addr", "127.0.0.1:8000", "Server address")
-    flag.StringVar(&cfg.env, "env", "dev", "dev|staging|prod")
-    flag.Parse()
+	var cfg config
 
-    logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
+	flag.IntVar(&cfg.port, "port", 8080, "Port for the HTTP server listen to")
+	flag.StringVar(&cfg.env, "env", "deployment", "Environment (deployment|staging|production)")
+	flag.Parse()
 
-    a := &app{
-        config: cfg,
-        logger: logger,
-    }
+	errLogger := log.New(os.Stderr, "[ERROR] ", log.Lshortfile|log.Ldate|log.Ltime)
+	infoLogger := log.New(os.Stdout, "[INFO] ", log.Ldate|log.Ltime)
 
-    srv := &http.Server{
-        Addr: cfg.addr,
-        Handler: a.routes(),
-        IdleTimeout: time.Minute,
-        ReadTimeout: 10 * time.Second,
-        WriteTimeout: 30 * time.Second,
-    }
+	app := &application{
+		config:     cfg,
+		errLogger:  errLogger,
+		infoLogger: infoLogger,
+	}
 
-    logger.Printf("starting %s server on %s", cfg.env, cfg.addr)
-    err := srv.ListenAndServe()
-    logger.Fatal(err.Error())
+	mux := http.NewServeMux()
+	mux.HandleFunc("/v1/healthcheck", app.healthcheckHandler)
+
+	server := &http.Server{
+		Addr:         fmt.Sprintf("127.0.0.1:%d", cfg.port),
+		Handler:      mux,
+		ErrorLog:     app.errLogger,
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 30 * time.Second,
+	}
+
+	infoLogger.Printf("Starting %s server at %s", cfg.env, server.Addr)
+	err := server.ListenAndServe()
+	errLogger.Fatal(err)
 }

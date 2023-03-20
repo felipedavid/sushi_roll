@@ -1,21 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 )
 
-func (a *app) healthcheckHandler(w http.ResponseWriter, r *http.Request) {
-	env := envelope{
-		"status": "available",
-		"system_info": map[string]string{
-			"env":     a.config.env,
-			"version": version,
-		},
-	}
-
-	err := a.writeJSON(w, http.StatusOK, env, nil)
-	if err != nil {
-		a.serverErrorResponse(w, r, err)
-		return
-	}
+func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "status: available")
+	fmt.Fprintf(w, "environment: %s\n", app.config.env)
+	fmt.Fprintf(w, "version: %s\n", version)
 }
