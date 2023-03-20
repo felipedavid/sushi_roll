@@ -31,7 +31,7 @@ func main() {
 	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
 	flag.Parse()
 
-	errLogger := log.New(os.Stderr, "[ERROR] ", log.Lshortfile|log.Ldate|log.Ltime)
+	errLogger := log.New(os.Stderr, "[ERROR] ", log.Llongfile|log.Ldate|log.Ltime)
 	infoLogger := log.New(os.Stdout, "[INFO] ", log.Ldate|log.Ltime)
 
 	app := &application{
