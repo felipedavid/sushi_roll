@@ -28,7 +28,7 @@ func main() {
 	var cfg config
 
 	flag.IntVar(&cfg.port, "port", 8080, "Port for the HTTP server listen to")
-	flag.StringVar(&cfg.env, "env", "deployment", "Environment (deployment|staging|production)")
+	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
 	flag.Parse()
 
 	errLogger := log.New(os.Stderr, "[ERROR] ", log.Lshortfile|log.Ldate|log.Ltime)
