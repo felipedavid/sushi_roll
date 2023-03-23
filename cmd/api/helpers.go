@@ -84,5 +84,5 @@ func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst any
 		return errors.New("body must contain a single JSON object")
 	}
 
-	return err
+	return nil
 }
