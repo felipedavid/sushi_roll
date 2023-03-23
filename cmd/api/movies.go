@@ -10,8 +10,8 @@ import (
 )
 
 func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
-	paramsString := r.URL.Path[len("/v1/movies/"):]
-	params := strings.Split(paramsString, "/")
+	path := strings.Split(r.URL.Path, "/")
+	params := path[3:]
 
 	const idIndex = 0
 
@@ -24,7 +24,7 @@ func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		movie := data.Movie{
-			ID:        1,
+			ID:        int64(movieID),
 			Title:     "Finding Nemo",
 			Genres:    []string{"kids", "comedy"},
 			CreatedAt: time.Now(),
@@ -39,7 +39,20 @@ func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case http.MethodPost:
-		fmt.Fprintf(w, "Creating a movie")
+		var input struct {
+			Title   string   `json:"title"`
+			Year    int32    `json:"year"`
+			Runtime int32    `json:"runtime"`
+			Genres  []string `json:"genres"`
+		}
+
+		err := app.readJSON(w, r, &input)
+		if err != nil {
+			app.badRequestResponse(w, r)
+			return
+		}
+
+		fmt.Fprintf(w, "%+v\n", input)
 	default:
 		w.Header().Set("Allow", "GET, POST")
 		app.methodNotAllowedResponse(w, r)
