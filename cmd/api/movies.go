@@ -48,7 +48,7 @@ func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
 
 		err := app.readJSON(w, r, &input)
 		if err != nil {
-			app.badRequestResponse(w, r)
+			app.badRequestResponse(w, r, err)
 			return
 		}
 
