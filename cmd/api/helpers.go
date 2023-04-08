@@ -79,7 +79,7 @@ func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst any
 		}
 	}
 
-	// Make sure the user has send us a single json object
+	// Make sure the user has sent us a single json object
 	if err = decoder.Decode(&struct{}{}); err != io.EOF {
 		return errors.New("body must contain a single JSON object")
 	}
