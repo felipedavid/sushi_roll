@@ -10,6 +10,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/felipedavid/sushi_roll/internal/data"
 	_ "github.com/lib/pq"
 )
 
@@ -32,6 +33,7 @@ type application struct {
 	config     config
 	errLogger  *log.Logger
 	infoLogger *log.Logger
+	models     *data.Models
 }
 
 func main() {
@@ -62,6 +64,7 @@ func main() {
 		config:     cfg,
 		errLogger:  errLogger,
 		infoLogger: infoLogger,
+		models:     data.NewModels(db),
 	}
 
 	server := &http.Server{

@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/felipedavid/sushi_roll/internal/data"
-	"github.com/felipedavid/sushi_roll/internal/validator"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/felipedavid/sushi_roll/internal/data"
+	"github.com/felipedavid/sushi_roll/internal/validator"
 )
 
 func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +69,13 @@ func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		fmt.Fprintf(w, "%+v\n", input)
+		err = app.models.Movies.Insert(movie)
+		if err != nil {
+			app.serverErrorResponse(w, r, err)
+			return
+		}
+
+		fmt.Fprintf(w, "Movie created!")
 	default:
 		w.Header().Set("Allow", "GET, POST")
 		app.methodNotAllowedResponse(w, r)
