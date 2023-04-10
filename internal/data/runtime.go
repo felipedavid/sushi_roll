@@ -12,7 +12,7 @@ var ErrInvalidRuntimeFormat = errors.New("invalid runtime format")
 type Runtime int32
 
 func (r *Runtime) MarshalJSON() ([]byte, error) {
-	res := fmt.Sprintf(`"%d mins"`, r)
+	res := fmt.Sprintf(`"%d mins"`, *r)
 	return []byte(res), nil
 }
 
