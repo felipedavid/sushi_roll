@@ -75,7 +75,13 @@ func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		fmt.Fprintf(w, "Movie created!")
+		headers := make(http.Header)
+		headers.Set("Location", fmt.Sprintf("/v1/movies/%d", movie.ID))
+
+		err = app.writeJSON(w, http.StatusCreated, envelope{"movie": movie}, headers)
+		if err != nil {
+			app.serverErrorResponse(w, r, err)
+		}
 	default:
 		w.Header().Set("Allow", "GET, POST")
 		app.methodNotAllowedResponse(w, r)
