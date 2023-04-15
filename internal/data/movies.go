@@ -2,6 +2,7 @@ package data
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/felipedavid/sushi_roll/internal/validator"
@@ -49,11 +50,36 @@ func (m *MovieModel) Insert(movie *Movie) error {
 }
 
 func (m *MovieModel) Get(id int64) (*Movie, error) {
-	return nil, nil
+	stmt := `SELECT id, created_at, title, year, runtime, genres, version FROM movies WHERE id = $1`
+
+	var movie Movie
+	err := m.DB.QueryRow(stmt, id).Scan(
+		&movie.ID,
+		&movie.CreatedAt,
+		&movie.Title,
+		&movie.Year,
+		&movie.Runtime,
+		pq.Array(&movie.Genres),
+		&movie.Version,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrRecordNotFound
+		}
+		return nil, err
+	}
+
+	return &movie, nil
 }
 
 func (m *MovieModel) Update(movie *Movie) error {
-	return nil
+	stmt := `UPDATE movies 
+		SET title = $1, year = $2, runtime = $3, genres = $4, version = version + 1 
+		WHERE id = $5
+		RETURNING version`
+
+	row := m.DB.QueryRow(stmt, movie.Title, movie.Year, movie.Runtime, movie.Genres, movie.ID)
+	return row.Scan(&movie.Version)
 }
 
 func (m *MovieModel) Delete(id int64) error {

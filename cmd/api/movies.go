@@ -1,11 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/felipedavid/sushi_roll/internal/data"
 	"github.com/felipedavid/sushi_roll/internal/validator"
@@ -19,20 +19,20 @@ func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
-		movieID, err := strconv.Atoi(params[idIndex])
+		movieID, err := strconv.ParseInt(params[idIndex], 10, 64)
 		if err != nil || movieID <= 0 {
 			app.notFoundResponse(w, r)
 			return
 		}
 
-		movie := data.Movie{
-			ID:        int64(movieID),
-			Title:     "Finding Nemo",
-			Genres:    []string{"kids", "comedy"},
-			CreatedAt: time.Now(),
-			Version:   1,
-			Runtime:   189,
-			Year:      2006,
+		movie, err := app.models.Movies.Get(movieID)
+		if err != nil {
+			if errors.Is(err, data.ErrRecordNotFound) {
+				app.notFoundResponse(w, r)
+				return
+			}
+			app.serverErrorResponse(w, r, err)
+			return
 		}
 
 		err = app.writeJSON(w, http.StatusOK, envelope{"movie": movie}, nil)
@@ -79,6 +79,58 @@ func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
 		headers.Set("Location", fmt.Sprintf("/v1/movies/%d", movie.ID))
 
 		err = app.writeJSON(w, http.StatusCreated, envelope{"movie": movie}, headers)
+		if err != nil {
+			app.serverErrorResponse(w, r, err)
+		}
+	case http.MethodPut:
+		movieID, err := strconv.ParseInt(params[idIndex], 10, 64)
+		if err != nil || movieID <= 0 {
+			app.notFoundResponse(w, r)
+			return
+		}
+
+		movie, err := app.models.Movies.Get(movieID)
+		if err != nil {
+			if errors.Is(err, data.ErrRecordNotFound) {
+				app.notFoundResponse(w, r)
+				return
+			}
+			app.serverErrorResponse(w, r, err)
+			return
+		}
+
+		var input struct {
+			Title   string       `json:"title"`
+			Year    int32        `json:"Year"`
+			Runtime data.Runtime `json:"Runtime"`
+			Genres  []string     `json:"Genres"`
+		}
+
+		err = app.readJSON(w, r, &input)
+		if err != nil {
+			app.badRequestResponse(w, r, err)
+			return
+		}
+
+		movie.Title = input.Title
+		movie.Year = input.Year
+		movie.Runtime = input.Runtime
+		movie.Genres = input.Genres
+
+		v := validator.New()
+
+		if data.ValidateMovie(v, movie); !v.Valid() {
+			app.failedValidationResponse(w, r, v.Errors)
+			return
+		}
+
+		err = app.models.Movies.Update(movie)
+		if err != nil {
+			app.failedValidationResponse(w, r, v.Errors)
+			return
+		}
+
+		err = app.writeJSON(w, http.StatusOK, envelope{"movie": movie}, nil)
 		if err != nil {
 			app.serverErrorResponse(w, r, err)
 		}
