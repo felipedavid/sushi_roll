@@ -75,11 +75,18 @@ func (m *MovieModel) Get(id int64) (*Movie, error) {
 func (m *MovieModel) Update(movie *Movie) error {
 	stmt := `UPDATE movies 
 		SET title = $1, year = $2, runtime = $3, genres = $4, version = version + 1 
-		WHERE id = $5
+		WHERE id = $5 AND version = $6
 		RETURNING version`
 
-	row := m.DB.QueryRow(stmt, movie.Title, movie.Year, movie.Runtime, pq.Array(movie.Genres), movie.ID)
-	return row.Scan(&movie.Version)
+	row := m.DB.QueryRow(stmt, movie.Title, movie.Year, movie.Runtime, pq.Array(movie.Genres), movie.ID, movie.Version)
+	if err := row.Scan(&movie.Version); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrEditConflict
+		}
+		return err
+	}
+
+	return nil
 }
 
 func (m *MovieModel) Delete(id int64) error {

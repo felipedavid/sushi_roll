@@ -132,7 +132,11 @@ func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
 
 		err = app.models.Movies.Update(movie)
 		if err != nil {
-			app.failedValidationResponse(w, r, v.Errors)
+			if errors.Is(err, data.ErrEditConflict) {
+				app.editConflictResponse(w, r)
+			} else {
+				app.serverErrorResponse(w, r, err)
+			}
 			return
 		}
 
@@ -185,7 +189,11 @@ func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
 
 		err = app.models.Movies.Update(movie)
 		if err != nil {
-			app.failedValidationResponse(w, r, v.Errors)
+			if errors.Is(err, data.ErrEditConflict) {
+				app.editConflictResponse(w, r)
+			} else {
+				app.serverErrorResponse(w, r, err)
+			}
 			return
 		}
 
