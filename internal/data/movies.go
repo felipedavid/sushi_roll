@@ -1,6 +1,7 @@
 package data
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"time"
@@ -45,15 +46,23 @@ func (m *MovieModel) Insert(movie *Movie) error {
 		VALUES ($1, $2, $3, $4)
 		RETURNING id, created_at, version`
 
-	row := m.DB.QueryRow(stmt, movie.Title, movie.Year, movie.Runtime, pq.Array(movie.Genres))
+	// Timeout queries that take longer then 3 seconds to run
+	ctx, cancelCtx := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancelCtx()
+
+	row := m.DB.QueryRowContext(ctx, stmt, movie.Title, movie.Year, movie.Runtime, pq.Array(movie.Genres))
 	return row.Scan(&movie.ID, &movie.CreatedAt, &movie.Version)
 }
 
 func (m *MovieModel) Get(id int64) (*Movie, error) {
 	stmt := `SELECT id, created_at, title, year, runtime, genres, version FROM movies WHERE id = $1`
 
+	// Timeout queries that take longer then 3 seconds to run
+	ctx, cancelCtx := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancelCtx()
+
 	var movie Movie
-	err := m.DB.QueryRow(stmt, id).Scan(
+	err := m.DB.QueryRowContext(ctx, stmt, id).Scan(
 		&movie.ID,
 		&movie.CreatedAt,
 		&movie.Title,
@@ -78,7 +87,11 @@ func (m *MovieModel) Update(movie *Movie) error {
 		WHERE id = $5 AND version = $6
 		RETURNING version`
 
-	row := m.DB.QueryRow(stmt, movie.Title, movie.Year, movie.Runtime, pq.Array(movie.Genres), movie.ID, movie.Version)
+	// Timeout queries that take longer then 3 seconds to run
+	ctx, cancelCtx := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancelCtx()
+
+	row := m.DB.QueryRowContext(ctx, stmt, movie.Title, movie.Year, movie.Runtime, pq.Array(movie.Genres), movie.ID, movie.Version)
 	if err := row.Scan(&movie.Version); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return ErrEditConflict
@@ -92,7 +105,11 @@ func (m *MovieModel) Update(movie *Movie) error {
 func (m *MovieModel) Delete(id int64) error {
 	stmt := `DELETE FROM movies WHERE id = $1`
 
-	result, err := m.DB.Exec(stmt, id)
+	// Timeout queries that take longer then 3 seconds to run
+	ctx, cancelCtx := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancelCtx()
+
+	result, err := m.DB.ExecContext(ctx, stmt, id)
 	if err != nil {
 		return err
 	}
