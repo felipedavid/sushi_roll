@@ -78,7 +78,7 @@ func (m *MovieModel) Update(movie *Movie) error {
 		WHERE id = $5
 		RETURNING version`
 
-	row := m.DB.QueryRow(stmt, movie.Title, movie.Year, movie.Runtime, movie.Genres, movie.ID)
+	row := m.DB.QueryRow(stmt, movie.Title, movie.Year, movie.Runtime, pq.Array(movie.Genres), movie.ID)
 	return row.Scan(&movie.Version)
 }
 

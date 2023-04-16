@@ -82,6 +82,65 @@ func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			app.serverErrorResponse(w, r, err)
 		}
+	case http.MethodPatch:
+		movieID, err := strconv.ParseInt(params[idIndex], 10, 64)
+		if err != nil || movieID <= 0 {
+			app.notFoundResponse(w, r)
+			return
+		}
+
+		movie, err := app.models.Movies.Get(movieID)
+		if err != nil {
+			if errors.Is(err, data.ErrRecordNotFound) {
+				app.notFoundResponse(w, r)
+				return
+			}
+			app.serverErrorResponse(w, r, err)
+			return
+		}
+
+		var input struct {
+			Title   *string       `json:"title"`
+			Year    *int32        `json:"Year"`
+			Runtime *data.Runtime `json:"Runtime"`
+			Genres  []string      `json:"Genres"`
+		}
+
+		err = app.readJSON(w, r, &input)
+		if err != nil {
+			app.badRequestResponse(w, r, err)
+			return
+		}
+
+		switch {
+		case input.Title != nil:
+			movie.Title = *input.Title
+		case input.Year != nil:
+			movie.Year = *input.Year
+		case input.Runtime != nil:
+			movie.Runtime = *input.Runtime
+		case input.Genres != nil:
+			movie.Genres = input.Genres
+		}
+
+		v := validator.New()
+
+		if data.ValidateMovie(v, movie); !v.Valid() {
+			app.failedValidationResponse(w, r, v.Errors)
+			return
+		}
+
+		err = app.models.Movies.Update(movie)
+		if err != nil {
+			app.failedValidationResponse(w, r, v.Errors)
+			return
+		}
+
+		err = app.writeJSON(w, http.StatusOK, envelope{"movie": movie}, nil)
+		if err != nil {
+			app.serverErrorResponse(w, r, err)
+		}
+
 	case http.MethodPut:
 		movieID, err := strconv.ParseInt(params[idIndex], 10, 64)
 		if err != nil || movieID <= 0 {
@@ -156,7 +215,7 @@ func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
 			app.serverErrorResponse(w, r, err)
 		}
 	default:
-		w.Header().Set("Allow", "GET, POST")
+		w.Header().Set("Allow", "GET, POST, PUT, PATCH")
 		app.methodNotAllowedResponse(w, r)
 	}
 }
