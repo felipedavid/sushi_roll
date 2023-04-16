@@ -134,6 +134,27 @@ func (app *application) moviesHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			app.serverErrorResponse(w, r, err)
 		}
+	case http.MethodDelete:
+		movieID, err := strconv.ParseInt(params[idIndex], 10, 64)
+		if err != nil || movieID <= 0 {
+			app.notFoundResponse(w, r)
+			return
+		}
+
+		err = app.models.Movies.Delete(movieID)
+		if err != nil {
+			if errors.Is(err, data.ErrRecordNotFound) {
+				app.notFoundResponse(w, r)
+			} else {
+				app.serverErrorResponse(w, r, err)
+			}
+			return
+		}
+
+		err = app.writeJSON(w, http.StatusOK, envelope{"message": "deletion was successful"}, nil)
+		if err != nil {
+			app.serverErrorResponse(w, r, err)
+		}
 	default:
 		w.Header().Set("Allow", "GET, POST")
 		app.methodNotAllowedResponse(w, r)
